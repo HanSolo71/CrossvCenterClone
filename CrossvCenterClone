@@ -1,6 +1,7 @@
 Import-Module VMware.VimAutomation.Cis.Core
 Import-Module VMware.VimAutomation.Common
 Import-Module VMware.VimAutomation.Core
+Import-Module VMware.vimautomation.vds
 
 Function xNew-VM {
     <#
