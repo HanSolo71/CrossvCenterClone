@@ -109,7 +109,7 @@ add-type @"
     $service = New-Object VMware.Vim.ServiceLocator
     $credential = New-Object VMware.Vim.ServiceLocatorNamePassword
     $credential.username = $destVCusername
-    $credential.password = $destVCpassword
+    $credential.password = $DestinationPasswordUnencrypyt
     $service.credential = $credential
     # For some xVC-vMotion, VC's InstanceUUID must be in all caps
     # Haven't figured out why, but this flag would allow user to toggle (default=false)
@@ -191,21 +191,24 @@ $switchtype = "DVS"
 $poweron = $false
 $snapshotname = "pristine"
 $UppercaseUUID = $true
-$user = Read-host "What is your vCenter Username"
+
 
 #Securely gather username and password
-
-$Password = Read-Host -AsSecureString "What is your password" 
-$passwordunc = [System.Runtime.InteropServices.marshal]::PtrToStringAuto([System.Runtime.InteropServices.marshal]::SecureStringToBSTR($Password))
-New-VICredentialStoreItem -Host $sourceVC -User $user -Password $passwordunc
-New-VICredentialStoreItem -Host $destvc -User $user -Password $passwordunc
+$SourceUser = Read-host "What is your source vCenter Username"
+$SourcePassword = Read-Host -AsSecureString "What is the source vCenter password" 
+$DestinationUser = Read-host "What is your destination vCenter Username"
+$DestinationPassword = Read-Host -AsSecureString "What is the destination vCenter password" 
+$SourcePasswordUnencrypyt = [System.Runtime.InteropServices.marshal]::PtrToStringAuto([System.Runtime.InteropServices.marshal]::SecureStringToBSTR($SourcePassword))
+$DestinationPasswordUnencrypyt = [System.Runtime.InteropServices.marshal]::PtrToStringAuto([System.Runtime.InteropServices.marshal]::SecureStringToBSTR($DestinationPassword))
+New-VICredentialStoreItem -Host $sourceVC -User $SourceUser -Password $SourcePasswordUnencrypyt
+New-VICredentialStoreItem -Host $destvc -User $DestinationUser -Password $DestinationPasswordUnencrypyt
 
 # Connect to Source/Destination vCenter Server
 $sourceVCConn = Connect-VIServer -Server $sourceVC 
 $destVCConn = Connect-VIServer -Server $destVC
 
 #Remove-VM if it already exists
-Remove-VM -Server $destVC -DeletePermanently -Confirm -VM $destvmname
+#Remove-VM -Server $destVC -DeletePermanently -Confirm -VM $destvmname
 
 xNew-VM -sourcevc $sourceVCConn -destvc $destVCConn -sourcevmname $sourcevmname -destvmname `
     $destvmname -switchtype $switchtype -datacenter $datacenter -cluster $cluster -vmhost `
