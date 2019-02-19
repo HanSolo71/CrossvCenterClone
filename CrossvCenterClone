@@ -102,7 +102,7 @@ add-type @"
     # regardless if its within same SSO Domain or not
     $service = New-Object VMware.Vim.ServiceLocator
     $credential = New-Object VMware.Vim.ServiceLocatorNamePassword
-    $credential.username = $destVCusername
+    $credential.username = $DestinationUser
     $credential.password = $DestinationPasswordUnencrypyt
     $service.credential = $credential
     # For some xVC-vMotion, VC's InstanceUUID must be in all caps
